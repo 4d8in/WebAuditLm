@@ -1,0 +1,11 @@
+.env
+.env.local
+CLAUDE.md
+.log
+BUILD_PROMPT.md
+node_modules/
+dist/
+build/
+.vite/
+supabase/.branches/
+supabase/.temp/
