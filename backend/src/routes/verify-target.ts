@@ -31,7 +31,7 @@ function isLabHostname(domain: string): boolean {
   if (domain === 'localhost' || domain === '127.0.0.1' || domain === '[::1]' || domain === '::1') {
     return true;
   }
-  if (domain.endsWith('.localhost') || domain.endsWith('.local')|| domain.endsWith('.com')) return true;
+  if (domain.endsWith('.localhost') || domain.endsWith('.local')) return true;
   if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(domain)) return true;
   if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(domain)) return true;
   if (/^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(domain)) return true;
@@ -49,11 +49,12 @@ async function checkDnsTxt(domain: string, token: string): Promise<boolean> {
     `https://cloudflare-dns.com/dns-query?name=webaudit-verify.${domain}&type=TXT`,
     { headers: { Accept: 'application/dns-json' }, signal: AbortSignal.timeout(8000) },
   );
-  if (!r.ok) return false;
+ //possibility of returning false if the file is not found
+ // if (!r.ok) return false;
   const data = (await r.json().catch(() => ({}))) as any;
   const answers: string[] = (data?.Answer || []).map((a: any) => String(a.data || '').replace(/^"|"$/g, ''));
   //my own modifciation 
-  if(answers.length === 0) return true;
+ // if(answers.length === 0) return false;
   return answers.some((v) => v === token);
 }
 
@@ -62,7 +63,7 @@ async function checkFileUpload(domain: string, token: string): Promise<boolean> 
     signal: AbortSignal.timeout(8000),
   });
   //my own modifciation  with add r.status !== 404 to check if the file is not found or if the file is found but the content is not the same as the token
-  if (!r.ok || r.status !== 404) return true;
+  //if (!r.ok || r.status === 404) return false;
   const body = (await r.text()).trim();
   return body === token;
 }

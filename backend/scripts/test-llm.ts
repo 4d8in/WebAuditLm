@@ -1,8 +1,8 @@
 // Manual smoke test for the reporting agent's LLM wiring — no Supabase, no
 // real scan needed. Run with:
-//   cd backend && npx tsx scripts/test-llm.ts
-// Requires REPORTING_LLM_ENDPOINT / REPORTING_LLM_MODEL set in backend/.env
-// (or exported in the shell) — e.g. a local Ollama serving Hermes 4.
+//   cd backend && npx tsx scripts/test-llm.ts            # uses LLM_PROFILE from .env (default: prod)
+//   cd backend && LLM_PROFILE=dev npx tsx scripts/test-llm.ts   # fast model for quick iteration
+// See backend/src/llm/profiles.ts for what each profile resolves to.
 import 'dotenv/config';
 import { generateReport } from '../src/agents/reporting/index.ts';
 import type { ModuleResult } from '../src/modules/active/types.ts';

@@ -35,11 +35,38 @@ for the full constraint list; this README is the quick developer map.
                            no second table, no signature bypass)
 ```
 
+## Database — hosted Supabase project (primary)
+
+The backend talks to a real hosted Supabase project, not the local Docker
+stack (that was only used to prove the migrations out during setup, then
+stopped — see "Local/offline alternative" below).
+
+1. Create a project at [supabase.com/dashboard](https://supabase.com/dashboard).
+2. Run both files in `supabase/migrations/` against it, in order, via the
+   dashboard's **SQL Editor** (paste file 1, run; paste file 2, run).
+3. From **Settings → API**, copy the **Project URL** (`https://<ref>.supabase.co`
+   — not the dashboard page URL in your browser's address bar, that's a
+   different thing) and the **service_role** (secret) key into
+   `backend/.env`:
+   ```
+   SUPABASE_URL=https://<your-project-ref>.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=<service_role key>
+   ```
+
+### Local/offline alternative
+
+`supabase/config.toml` is only read when you run the CLI's local Docker
+stack — it has no effect on the hosted path above. Useful if you want to
+work without an account/internet:
+```
+npx supabase start   # from repo root; prints a local SUPABASE_URL/SERVICE_ROLE_KEY to use instead
+npx supabase stop     # tears the containers back down
+```
+
 ## Running locally
 
 ```
-cd backend && npm install && cp .env.example .env   # fill in Supabase local creds
-npx supabase start                                  # from repo root, once supabase/ has a config.toml
+cd backend && npm install && cp .env.example .env   # fill in your Supabase project's URL/key
 npm run dev                                          # backend, :8787
 ```
 
